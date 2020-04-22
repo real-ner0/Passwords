@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+# ner0 https://www.github.com/real-ner0
+# Random Password Generator
+# secures : means secure in Latin
+
+require 'optparse'
+
+
+# Display help menu if no arguments passed
+ARGV << "-h" if ARGV.empty?
+
+
+# Load the options or parameters passed into ARGV in a hash
+# Flag => Value
+options = {}
+
+
+# Create an instance of "OptionParser" and start parsing till end.parse!
+OptionParser.new do | opts |
+
+
+  opts.banner = "Usage: securus -l or --length <password_length>\n"
+
+
+  opts.on("-l", "--length=value", "Length of password") do | val |
+    
+
+    # Check if chomu user entered a string
+    if val.to_i == 0 and val.is_a? String
+      puts "Enter a number...!"
+      exit
+    end
+
+
+    # Check range bounds
+    if val.to_i < 10 or val.to_i > 128
+      puts "Minimum password length : 10"
+      puts "Maximum password length : 128"
+      puts "\nPlease try again..."
+      exit
+    end
+
+
+    # Store the value entered
+    options[:length] = val
+
+  end
+
+
+  # Displays help menu and exit
+  opts.on("-h", "--help", "Shows this help menu") do
+    puts opts
+    exit
+  end
+
+
+end.parse!
+
+
+# Store the password length in pass_len
+pass_len = options[:length].to_i
+
+
+# Tell user about the file location
+puts "\nHere's your password and the password is stored in /tmp as pass.txt in case you forgot the password:\n\t"
+
+user_pass = ""
+
+
+# Start generating random hex string
+
+# Not all special characters are accepted in password field. Refer to IBM's site
+# https://www.ibm.com/support/knowledgecenter/SSV2LR/com.ibm.wbpm.imuc.doc/topics/rsec_characters.html
+# LEAVE THIS FOR NOW -> range_specchars = "!)(-.?][_;:@#%$^*+="     # Size : 19
+chars = "ArBCDqEFGpHIJsKoLMNnOPmQtRSlTUVkWXYjuZ123h456vg7890f!)(ew-.?d]x[_;c:@y#%b$^*+za="
+
+for i in 1..pass_len
+  rand_int = rand(71)
+  rand_int = rand_int*rand(rand_int)
+
+  user_pass += chars[rand_int % 71].to_s
+end
+
+puts user_pass
+
+
+# Create file pass.txt and load the password
+
+pass_file = File.new("/tmp/pass.txt", "w")
+pass_file.syswrite(user_pass)
+pass_file.close
+
+# End of Code
